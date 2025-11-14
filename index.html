@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía completa paso a paso para crear aplicaciones web con Retool y Firestore, incluyendo CRUD, validaciones y transformers">
+  <meta name="keywords" content="Retool, Firestore, Firebase, tutorial, guía, CRUD, JavaScript, low-code">
+  <title>Guía Completa: Retool y Firestore - Manual Paso a Paso</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+      </div>
+      <h2 class="sidebar-title">Retool &amp; Firestore</h2>
+    </div>
+    
+    <div class="sidebar-nav">
+      <a href="#intro" class="nav-link active" data-section="intro">Introducción</a>
+      <a href="#parte-1" class="nav-link" data-section="parte-1">📋 Parte 1: Prerrequisitos</a>
+      <a href="#parte-2" class="nav-link" data-section="parte-2">🔌 Parte 2: Conectar Firestore</a>
+      <a href="#parte-3" class="nav-link" data-section="parte-3">📊 Parte 3: Leer y Mostrar</a>
+      <a href="#parte-4" class="nav-link" data-section="parte-4">✍️ Parte 4: Crear Datos</a>
+      <a href="#parte-5" class="nav-link" data-section="parte-5">🔄 Parte 5: Actualizar y Borrar</a>
+      <a href="#parte-6" class="nav-link" data-section="parte-6">🔐 Parte 6: Validaciones</a>
+      <a href="#parte-7" class="nav-link" data-section="parte-7">🧬 Parte 7: Transformers</a>
+      <a href="#conclusion" class="nav-link" data-section="conclusion">🎉 Conclusión</a>
+      <a href="#conceptos" class="nav-link" data-section="conceptos">🧩 Conceptos Clave</a>
+    </div>
+
+    <div class="sidebar-footer">
+      <p>Manual v2.0</p>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="header-title">🚀 Guía Completa v2.0: App Web con Retool y Firestore</h1>
+      <p class="header-subtitle">Manual paso a paso para crear aplicaciones CRUD con validaciones y transformers</p>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Introduction Section -->
+    <section id="intro" class="content-section">
+      <div class="card">
+        <h2>Introducción</h2>
+        <p class="intro-text">Este manual te enseñará a construir una aplicación de "Gestión de Usuarios" donde podremos ver, crear, actualizar y borrar usuarios. Nos aseguraremos de que los datos sean correctos (Validaciones) y los formatearemos para mostrarlos (Transformers).</p>
+        
+        <div class="concepts-grid">
+          <div class="concept-card">
+            <h3>🛠️ Retool</h3>
+            <p>La plataforma "low-code" para construir el frontend (la aplicación web) arrastrando componentes.</p>
+          </div>
+          <div class="concept-card">
+            <h3>🔥 Firestore (Firebase)</h3>
+            <p>Nuestra base de datos NoSQL en la nube donde vivirán los datos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 1: Prerequisites -->
+    <section id="parte-1" class="content-section">
+      <div class="card">
+        <h2>📋 Parte 1: Prerrequisitos (Lo que necesitas ANTES de empezar)</h2>
+        
+        <div class="info-box">
+          <strong>Lo que necesitarás:</strong>
+          <ul>
+            <li>Una cuenta de Retool: Gratuita en <a href="https://retool.com" target="_blank">retool.com</a></li>
+            <li>Una cuenta de Google (Firebase): Para crear tu base de datos</li>
+          </ul>
+        </div>
+
+        <h3>Crear un Proyecto en Firebase</h3>
+        <ol class="steps-list">
+          <li>Ve a la <a href="https://console.firebase.google.com" target="_blank">Consola de Firebase</a></li>
+          <li>Haz clic en "Agregar proyecto" (ej. "MiAppRetool")</li>
+        </ol>
+
+        <h3>Crear tu Base de Datos Firestore</h3>
+        <ol class="steps-list">
+          <li>En tu proyecto de Firebase, ve a "Firestore Database"</li>
+          <li>Haz clic en "Crear base de datos"</li>
+          <li>
+            <div class="warning-box">
+              <strong>⚠️ IMPORTANTE:</strong> Inicia en "Modo de prueba" (Test mode). Esto nos permite leer y escribir sin configurar reglas de seguridad complejas por ahora.
+            </div>
+          </li>
+          <li>Elige una ubicación para el servidor</li>
+        </ol>
+
+        <h3>Añadir Datos de Prueba</h3>
+        <ol class="steps-list">
+          <li>En Firestore, haz clic en "+ Iniciar colección"</li>
+          <li>Nombre de la colección: <code>usuarios</code></li>
+          <li>Crea un documento con ID automático y añade estos campos:</li>
+        </ol>
+
+        <div class="fields-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Campo</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>nombre</code></td>
+                <td>string</td>
+                <td>Ana Torres</td>
+              </tr>
+              <tr>
+                <td><code>email</code></td>
+                <td>string</td>
+                <td>ana.torres@ejemplo.com</td>
+              </tr>
+              <tr>
+                <td><code>activo</code></td>
+                <td>boolean</td>
+                <td>true</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 2: Connect Firestore -->
+    <section id="parte-2" class="content-section">
+      <div class="card">
+        <h2>🔌 Parte 2: Conectar Retool con Firestore (El "Recurso")</h2>
+        <p>Retool necesita "permiso" para hablar con tu base de datos.</p>
+
+        <h3>Obtener tus credenciales JSON de Google Cloud</h3>
+        <ol class="steps-list">
+          <li>En Firebase, ve a <strong>Configuración del proyecto</strong> (el engranaje) → "Cuentas de servicio"</li>
+          <li>Haz clic en "Generar nueva clave privada"</li>
+          <li>
+            <div class="warning-box">
+              Se descargará un archivo JSON. <strong>¡Este archivo es secreto!</strong> Nunca lo compartas públicamente.
+            </div>
+          </li>
+        </ol>
+
+        <h3>Crear el "Recurso" en Retool</h3>
+        <ol class="steps-list">
+          <li>En tu dashboard de Retool, ve a la pestaña "Resources"</li>
+          <li>Haz clic en "Create new" → "Resource"</li>
+          <li>Busca y selecciona "Firestore"</li>
+          <li>Dale un nombre (ej: <code>MiFirestoreDB</code>)</li>
+          <li>Abre el archivo JSON que descargaste, copia todo su contenido y pégalo en el campo "Service Account Credentials" en Retool</li>
+          <li>Haz clic en "Test connection" (Probar conexión). Debería decir "Success!"</li>
+          <li>Haz clic en "Create resource" (Crear recurso)</li>
+        </ol>
+
+        <div class="success-box">
+          ✅ ¡Felicidades! Acabas de conectar tu backend (Firestore) con tu frontend (Retool).
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 3: Read and Display -->
+    <section id="parte-3" class="content-section">
+      <div class="card">
+        <h2>📊 Parte 3: Creando la App (Leer y Mostrar Datos)</h2>
+        
+        <h3>Crea tu Aplicación</h3>
+        <ol class="steps-list">
+          <li>En Retool, ve a "Apps" → "Create new" → "App"</li>
+          <li>Nómbrala <code>PanelDeUsuarios</code></li>
+        </ol>
+
+        <h3>Interfaz de Retool (Recordatorio)</h3>
+        <div class="info-box">
+          <ul>
+            <li><strong>Centro:</strong> El Lienzo (Canvas)</li>
+            <li><strong>Derecha:</strong> El Inspector (configura componentes)</li>
+            <li><strong>Abajo:</strong> El Editor de Consultas (habla con los datos)</li>
+          </ul>
+        </div>
+
+        <h3>Paso 1: Arrastrar una Tabla (Table)</h3>
+        <ol class="steps-list">
+          <li>En el Inspector (derecha), busca "Table" y arrástralo al lienzo</li>
+        </ol>
+
+        <h3>Paso 2: Crear Consulta para LEER datos</h3>
+        <ol class="steps-list">
+          <li>En el Editor de Consultas (abajo), haz clic en "+ New" → "Resource query"</li>
+          <li>Recurso: <code>MiFirestoreDB</code> (el que creamos)</li>
+          <li>Nombra la consulta (a la izquierda): <code>getUsuarios</code></li>
+          <li>Configura la consulta:
+            <ul>
+              <li>Operation: <strong>Get collections</strong></li>
+              <li>Collection name: <code>usuarios</code></li>
+            </ul>
+          </li>
+          <li>Haz clic en "Save &amp; Run" (Guardar y Ejecutar). Verás tus datos de Firestore</li>
+        </ol>
+
+        <h3>Paso 3: Conectar la Consulta a la Tabla</h3>
+        <ol class="steps-list">
+          <li>Haz clic en la Tabla (<code>table1</code>) en el lienzo</li>
+          <li>En el Inspector (derecha), busca el campo "Data"</li>
+          <li>Bórralo y escribe:</li>
+        </ol>
+
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><code class="language-javascript">&#123;&#123; getUsuarios.data &#125;&#125;</code></pre>
+        </div>
+
+        <div class="success-box">
+          ✅ ¡Tu tabla ahora muestra los datos de Firestore!
+        </div>
+
+        <div class="note-box">
+          <strong>💡 Explicación Rápida:</strong> Los "bigotes" <code>&#123;&#123; &#125;&#125;</code> son la forma en que Retool referencia variables. <code>&#123;&#123; getUsuarios.data &#125;&#125;</code> significa: "los datos que resultaron de la consulta getUsuarios".
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 4: Create Data -->
+    <section id="parte-4" class="content-section">
+      <div class="card">
+        <h2>✍️ Parte 4: Escribiendo Datos (Un Formulario de Creación)</h2>
+
+        <h3>Paso 1: Arrastrar un Formulario (Form)</h3>
+        <ol class="steps-list">
+          <li>Busca "Form" (en el Inspector derecho) y arrástralo al lienzo</li>
+        </ol>
+
+        <h3>Paso 2: Añadir Campos al Formulario</h3>
+        <ol class="steps-list">
+          <li>Arrastra un "Text Input" dentro del formulario. En el Inspector, cambia su "Label" a <strong>Nombre</strong> y su "Name" (debajo de "Label") a <code>inputNombre</code></li>
+          <li>Arrastra otro "Text Input". "Label" → <strong>Email</strong>, "Name" → <code>inputEmail</code></li>
+          <li>Arrastra un "Checkbox". "Label" → <strong>Activo</strong>, "Name" → <code>checkActivo</code></li>
+        </ol>
+
+        <div class="note-box">
+          💡 Usar "Name" nos da nombres legibles en lugar de textInput1, textInput2...
+        </div>
+
+        <h3>Paso 3: Crear la Consulta de ESCRITURA</h3>
+        <ol class="steps-list">
+          <li>Crea una nueva consulta de recurso: <code>crearUsuario</code></li>
+          <li>Configuración:
+            <ul>
+              <li>Resource: <code>MiFirestoreDB</code></li>
+              <li>Operation: <strong>Add new document</strong></li>
+              <li>Collection name: <code>usuarios</code></li>
+              <li>Value to add: Aquí le decimos qué guardar, usando los valores del formulario</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><code class="language-json">{
+  "nombre": "{{ inputNombre.value }}",
+  "email": "{{ inputEmail.value }}",
+  "activo": "{{ checkActivo.value }}"
+}</code></pre>
+        </div>
+
+        <h3>Paso 4: Conectar el Formulario a la Consulta</h3>
+        <ol class="steps-list">
+          <li>Haz clic en el Formulario (<code>form1</code>)</li>
+          <li>En el Inspector (derecha), en "Event Handlers", para el evento "Submit", selecciona la consulta <code>crearUsuario</code></li>
+        </ol>
+
+        <h3>Paso 5: Refrescar la Tabla Automáticamente</h3>
+        <ol class="steps-list">
+          <li>Queremos que la tabla se actualice después de crear el usuario</li>
+          <li>Haz clic en la consulta <code>crearUsuario</code> (en el panel inferior)</li>
+          <li>En el Inspector (derecha), busca la pestaña "Event Handlers"</li>
+          <li>Haz clic en "+ Add" en la sección "Success" (Éxito)</li>
+          <li>Configura el evento: <strong>Action:</strong> Trigger query, <strong>Query:</strong> getUsuarios</li>
+        </ol>
+
+        <div class="success-box">
+          ✅ ¡Prueba! Ve al modo "Preview". Llena el formulario y presiona "Submit". Deberías ver al nuevo usuario aparecer en la tabla instantáneamente.
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 5: Update and Delete -->
+    <section id="parte-5" class="content-section">
+      <div class="card">
+        <h2>🔄 Parte 5: Actualizar y Borrar Datos (Interactuando con la Tabla)</h2>
+
+        <h3>Paso 1: Poblar el Formulario con Datos de la Tabla</h3>
+        <p>La idea es: hago clic en una fila de la tabla y el formulario se llena con sus datos para editarlos.</p>
+        <ol class="steps-list">
+          <li>Haz clic en tu campo <code>inputNombre</code> (Nombre)</li>
+          <li>En el Inspector, busca "Default value" (Valor por defecto)</li>
+          <li>Escribe:</li>
+        </ol>
+
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><code class="language-javascript">&#123;&#123; table1.selectedRow.data.nombre &#125;&#125;</code></pre>
+        </div>
+
+        <ol class="steps-list" start="4">
+          <li>Haz lo mismo para los otros campos:
+            <ul>
+              <li>Email (<code>inputEmail</code>): Default value → <code>&#123;&#123; table1.selectedRow.data.email &#125;&#125;</code></li>
+              <li>Activo (<code>checkActivo</code>): Default value → <code>&#123;&#123; table1.selectedRow.data.activo &#125;&#125;</code></li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="note-box">
+          💡 <strong>Prueba:</strong> Ahora, cuando haces clic en una fila de la tabla, el formulario se rellena.
+        </div>
+
+        <h3>Paso 2: Crear la Consulta de ACTUALIZACIÓN (Update)</h3>
+        <ol class="steps-list">
+          <li>Crea una nueva consulta: <code>actualizarUsuario</code></li>
+          <li>Configuración:
+            <ul>
+              <li>Resource: <code>MiFirestoreDB</code></li>
+              <li>Operation: <strong>Update document</strong></li>
+              <li>Collection name: <code>usuarios</code></li>
+              <li>Document ID: <code>&#123;&#123; table1.selectedRow.data.id &#125;&#125;</code></li>
+              <li>Value to update:</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><code class="language-json">{
+  "nombre": "{{ inputNombre.value }}",
+  "email": "{{ inputEmail.value }}",
+  "activo": "{{ checkActivo.value }}"
+}</code></pre>
+        </div>
+
+        <ol class="steps-list" start="3">
+          <li>Añade un "Event Handler" en "Success" para que dispare <code>getUsuarios</code> (para refrescar la tabla)</li>
+        </ol>
+
+        <h3>Paso 3: Añadir un Botón de "Actualizar"</h3>
+        <ol class="steps-list">
+          <li>Arrastra un "Button" al lienzo (fuera del formulario)</li>
+          <li>Texto: <strong>Actualizar Usuario</strong></li>
+          <li>En "Event Handlers" ("Click"), haz que dispare la consulta <code>actualizarUsuario</code></li>
+        </ol>
+
+        <h3>Paso 4: Crear la Consulta de BORRADO (Delete)</h3>
+        <ol class="steps-list">
+          <li>Crea una nueva consulta: <code>borrarUsuario</code></li>
+          <li>Configuración:
+            <ul>
+              <li>Operation: <strong>Delete document</strong></li>
+              <li>Collection name: <code>usuarios</code></li>
+              <li>Document ID: <code>&#123;&#123; table1.selectedRow.data.id &#125;&#125;</code></li>
+            </ul>
+          </li>
+          <li>Añade un "Event Handler" en "Success" para que dispare <code>getUsuarios</code></li>
+        </ol>
+
+        <h3>Paso 5: Añadir un Botón de "Borrar"</h3>
+        <ol class="steps-list">
+          <li>Arrastra otro "Button" al lienzo</li>
+          <li>Texto: <strong>Borrar Usuario</strong>. Ponle un estilo "danger" (rojo)</li>
+          <li>En "Event Handlers" ("Click"), haz que dispare la consulta <code>borrarUsuario</code></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Part 6: Validations -->
+    <section id="parte-6" class="content-section">
+      <div class="card">
+        <h2>🔐 Parte 6: Añadiendo Validaciones (¡Que no te envíen datos basura!)</h2>
+        <p>¿Qué pasa si el usuario olvida el nombre o pone un email inválido? Debemos validar los datos antes de enviarlos a Firestore.</p>
+
+        <h3>Método 1: Validación a Nivel de Componente (Recomendado)</h3>
+        <p>Retool hace esto muy fácil.</p>
+
+        <h4>Campo Requerido (Nombre)</h4>
+        <ol class="steps-list">
+          <li>Haz clic en tu campo <code>inputNombre</code></li>
+          <li>En el Inspector (derecha), ve a la sección "Validation"</li>
+          <li>Activa el interruptor "Required"</li>
+          <li>Puedes poner un mensaje de error en "Required message" (ej: "El nombre es obligatorio")</li>
+        </ol>
+
+        <h4>Validación de Email</h4>
+        <ol class="steps-list">
+          <li>Haz clic en tu campo <code>inputEmail</code></li>
+          <li>En la sección "Validation":
+            <ul>
+              <li>Activa "Required"</li>
+              <li>En "Validation type", selecciona "Email" en el menú desplegable</li>
+              <li>Retool se encargará de verificar que el formato sea algo@algo.com</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="note-box">
+          <strong>💡 ¿Cómo funciona esto?</strong><br>
+          El Formulario (<code>form1</code>) tiene una propiedad llamada <code>&#123;&#123; form1.valid &#125;&#125;</code>. Esta propiedad será <code>true</code> solo si todos los campos dentro de él son válidos. Por defecto, el botón "Submit" del formulario se deshabilitará automáticamente si <code>&#123;&#123; form1.valid &#125;&#125;</code> es <code>false</code>. ¡No tienes que hacer nada más! Intenta enviar el formulario vacío. El botón estará desactivado.
+        </div>
+
+        <h3>Método 2: Deshabilitar Botones Manualmente (Para el botón "Actualizar")</h3>
+        <p>Nuestro botón "Actualizar Usuario" está fuera del formulario, por lo que no se deshabilita automáticamente. ¡Pero podemos hacerlo nosotros!</p>
+        
+        <ol class="steps-list">
+          <li>Haz clic en tu botón "Actualizar Usuario"</li>
+          <li>En el Inspector, busca la propiedad "Disabled"</li>
+          <li>Aquí podemos escribir una condición. Queremos deshabilitarlo si nuestros campos de texto son inválidos</li>
+          <li>Escribe en el campo "Disabled":</li>
+        </ol>
+
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><code class="language-javascript">&#123;&#123; inputNombre.invalid || inputEmail.invalid &#125;&#125;</code></pre>
+        </div>
+
+        <div class="info-box">
+          <strong>Explicación:</strong>
+          <ul>
+            <li><code>inputNombre.invalid</code> es <code>true</code> si el campo de nombre falla su validación (ej. está vacío)</li>
+            <li><code>inputEmail.invalid</code> es <code>true</code> si el campo de email falla su validación (ej. está vacío o no es un email)</li>
+            <li>El <code>||</code> (significa "O") hace que el botón se deshabilite si cualquiera de los dos campos es inválido</li>
+          </ul>
+        </div>
+
+        <div class="success-box">
+          ✅ ¡Ahora tu aplicación es mucho más robusta y previene datos basura!
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 7: Transformers -->
+    <section id="parte-7" class="content-section">
+      <div class="card">
+        <h2>🧬 Parte 7: Usando Transformers (Manipulando Datos con JavaScript)</h2>
+        <p>Un "Transformer" es un pequeño bloque de código JavaScript que se ejecuta después de que una consulta obtiene datos, pero antes de que se muestren.</p>
+
+        <div class="info-box">
+          <strong>💼 Caso de uso:</strong> Queremos mostrar todos los nombres de la tabla en MAYÚSCULAS, pero sin guardarlos en mayúsculas en nuestra base de datos de Firestore.
+        </div>
+
+        <h3>Paso 1: Habilita el Transformer</h3>
+        <ol class="steps-list">
+          <li>En el panel inferior, haz clic en tu consulta <code>getUsuarios</code></li>
+          <li>En el panel de configuración de la consulta (donde elegiste Get collections), busca la sección "Response" (Respuesta) en la parte de abajo</li>
+          <li>Haz clic en el interruptor "Enable Transformer"</li>
+        </ol>
+
+        <h3>Paso 2: Escribe el Código JavaScript</h3>
+        <p>Aparecerá un editor de código. La variable <code>data</code> contiene el resultado de tu consulta (el array de usuarios de Firestore).</p>
+
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><code class="language-javascript">// 'data' es el array original que viene de Firestore.
+// Usamos .map() para iterar sobre cada usuario en el array.
+
+return data.map(usuario => {
+  // Creamos una copia del objeto usuario para no mutar el original
+  // (esto es una buena práctica de programación).
+  const usuarioModificado = { ...usuario };
+
+  // Verificamos si el usuario tiene un nombre y lo transformamos
+  if (usuarioModificado.nombre) {
+    usuarioModificado.nombre = usuarioModificado.nombre.toUpperCase();
+  }
+
+  // ¡Incluso podemos AÑADIR nuevos campos que no existen en la DB!
+  usuarioModificado.letra_inicial = usuarioModificado.nombre ? usuarioModificado.nombre[0] : '?';
+
+  // Devolvemos el objeto usuario modificado
+  return usuarioModificado;
+});</code></pre>
+        </div>
+
+        <h3>Paso 3: Guarda y Ejecuta (Save &amp; Run)</h3>
+        <ol class="steps-list">
+          <li>¡Mira tu tabla! Todos los nombres ahora aparecen en MAYÚSCULAS</li>
+          <li>Y verás una nueva columna, "letra_inicial", que fue creada "al vuelo" por el Transformer</li>
+        </ol>
+
+        <div class="note-box">
+          <strong>💡 ¿Cómo funciona esto?</strong>
+          <ul>
+            <li>La Tabla sigue conectada a <code>&#123;&#123; getUsuarios.data &#125;&#125;</code></li>
+            <li>Cuando habilitas un Transformer, Retool es lo suficientemente inteligente como para que <code>&#123;&#123; getUsuarios.data &#125;&#125;</code> se refiera al resultado después de que el Transformer se haya ejecutado</li>
+            <li>(Si alguna vez necesitas los datos originales, sin transformar, están disponibles en <code>&#123;&#123; getUsuarios.rawData &#125;&#125;</code>)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section id="conclusion" class="content-section">
+      <div class="card highlight-card">
+        <h2>🎉 ¡Tu Aplicación v2.0 está Lista!</h2>
+        <p>Sal del modo de edición ("Preview" o "Play") y prueba tu aplicación completa y robusta:</p>
+        
+        <ul class="achievements-list">
+          <li>✅ Ves los datos de Firestore (<code>getUsuarios</code>)</li>
+          <li>✅ Los datos están formateados: los nombres están en mayúsculas y hay una columna "letra_inicial" que no existe en la DB (gracias al Transformer)</li>
+          <li>✅ No puedes crear un usuario si el nombre está vacío o el email es inválido (gracias a la Validación del Formulario)</li>
+          <li>✅ No puedes actualizar un usuario si los campos son inválidos (gracias a la Validación del botón "Actualizar")</li>
+          <li>✅ Creas, Actualizas y Borras usuarios, y la tabla se refresca automáticamente</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Key Concepts -->
+    <section id="conceptos" class="content-section">
+      <div class="card">
+        <h2>🧩 Resumen de Conceptos Clave (Actualizado)</h2>
+        
+        <div class="concepts-glossary">
+          <div class="glossary-item">
+            <h4>Recursos (Resources)</h4>
+            <p>Tus conexiones a bases de datos (Firestore)</p>
+          </div>
+          
+          <div class="glossary-item">
+            <h4>Componentes (Components)</h4>
+            <p>Los bloques de UI (Table, Button, Form, TextInput)</p>
+          </div>
+          
+          <div class="glossary-item">
+            <h4>Consultas (Queries)</h4>
+            <p>Las acciones que leen o escriben datos (Get, Add, Update)</p>
+          </div>
+          
+          <div class="glossary-item">
+            <h4>&#123;&#123; &#125;&#125; (Mustaches)</h4>
+            <p>El "pegamento" que conecta todo. (ej: <code>&#123;&#123; inputNombre.value &#125;&#125;</code>, <code>&#123;&#123; table1.selectedRow.data.id &#125;&#125;</code>)</p>
+          </div>
+          
+          <div class="glossary-item">
+            <h4>Event Handlers</h4>
+            <p>Cómo encadenas acciones (ej: "En Success, dispara getUsuarios")</p>
+          </div>
+          
+          <div class="glossary-item">
+            <h4>Validaciones (Validations)</h4>
+            <p>Reglas en los componentes (Required, Email) que protegen la calidad de tus datos</p>
+          </div>
+          
+          <div class="glossary-item">
+            <h4>Transformers</h4>
+            <p>Código JavaScript que te permite limpiar, formatear o reestructurar datos después de leerlos de tu base de datos y antes de mostrarlos en tu UI</p>
+          </div>
+        </div>
+
+        <div class="success-box" style="margin-top: 2rem;">
+          <strong>🎓 ¡Has construido una herramienta interna increíblemente completa y profesional!</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Creado con ❤️ para aprender Retool y Firestore | Manual v2.0 | 2025</p>
+    </footer>
+  </main>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="Volver arriba">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
